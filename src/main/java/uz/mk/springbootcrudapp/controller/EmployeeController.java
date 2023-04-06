@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.mk.springbootcrudapp.domain.Employee;
-import uz.mk.springbootcrudapp.payload.ApiResponse;
+import uz.mk.springbootcrudapp.payload.Response;
 import uz.mk.springbootcrudapp.payload.EmployeeDTO;
 import uz.mk.springbootcrudapp.service.EmployeeService;
 
@@ -22,6 +24,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+@Tag(name = "Employee", description = "Employee management APIs")
 @RestController
 @RequestMapping("/api/employee")
 @Validated
@@ -40,26 +43,26 @@ public class EmployeeController {
      */
 
     @Operation(
-            summary = "Создание счета  (Физ)",
-            description = "Создание счета  <b>(Физ)</b>",
-            tags = "Account"
+            summary = "Save Employee data",
+            description = "Save Employee data ()",
+            tags = "Employee"
     )
     @ApiResponses(
             value = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
+                    @ApiResponse(responseCode = "200",
                             description = "account successfully created case." +
                                     "",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ApiResponse.class)
+                                    schema = @Schema(implementation = Response.class)
                             )
                     )
             }
     )
-    @PostMapping
+    @PostMapping("/save")
     public HttpEntity<?> save(@Valid @Parameter(name = "Request body", required = true) @RequestBody EmployeeDTO employeeDTO) {
 
-        ApiResponse response = employeeService.save(employeeDTO);
+        Response response = employeeService.save(employeeDTO);
         return ResponseEntity.status(response.isStatus() ? 201 : 400).body(response);
     }
 
@@ -82,7 +85,7 @@ public class EmployeeController {
      */
     @GetMapping("/{id}")
     public HttpEntity<?> getOne(@NotNull @PathVariable Long id) {
-        ApiResponse response = employeeService.getOne(id);
+        Response response = employeeService.getOne(id);
         return ResponseEntity.status(response.isStatus() ? 200 : 404).body(response);
     }
 
@@ -92,7 +95,7 @@ public class EmployeeController {
      */
     @PutMapping("/{id}")
     public HttpEntity<?> edit(@Valid @RequestBody EmployeeDTO employeeDTO, @PathVariable Long id) {
-        ApiResponse response = employeeService.edit(employeeDTO, id);
+        Response response = employeeService.edit(employeeDTO, id);
         return ResponseEntity.status(response.isStatus() ? 202 : 400).body(response);
     }
 
@@ -104,7 +107,7 @@ public class EmployeeController {
     @PutMapping("/{id}/change-salary")
     public HttpEntity<?> changeSalary(@PathVariable Long id,
                                       @RequestParam Double salary) {
-        ApiResponse response = employeeService.changeSalary(id, salary);
+        Response response = employeeService.changeSalary(id, salary);
         return ResponseEntity.status(response.isStatus() ? 202 : 400).body(response);
     }
 
@@ -114,7 +117,7 @@ public class EmployeeController {
      */
     @DeleteMapping("/{id}")
     public HttpEntity<?> delete(@PathVariable Long id) {
-        ApiResponse response = employeeService.delete(id);
+        Response response = employeeService.delete(id);
         return ResponseEntity.ok(response);
     }
 

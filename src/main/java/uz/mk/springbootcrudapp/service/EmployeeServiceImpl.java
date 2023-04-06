@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uz.mk.springbootcrudapp.domain.Employee;
 import uz.mk.springbootcrudapp.exception.ApiResourceNotFoundException;
-import uz.mk.springbootcrudapp.payload.ApiResponse;
+import uz.mk.springbootcrudapp.payload.Response;
 import uz.mk.springbootcrudapp.payload.EmployeeDTO;
 import uz.mk.springbootcrudapp.repository.EmployeeRepository;
 
@@ -23,10 +23,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ApiResponse save(EmployeeDTO employeeDTO) {
+    public Response save(EmployeeDTO employeeDTO) {
         boolean existsByEmail = employeeRepository.existsByEmail(employeeDTO.getEmail());
         if (existsByEmail) {
-            return new ApiResponse("Email '" + employeeDTO.getEmail() + "' already exists", false);
+            return new Response("Email '" + employeeDTO.getEmail() + "' already exists", false);
         }
 
         Employee employee = new Employee();
@@ -34,7 +34,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee savedEmployee = employeeRepository.save(employee);
 
-        return new ApiResponse("Employee saved", true, savedEmployee);
+        return new Response("Employee saved", true, savedEmployee);
     }
 
 
@@ -45,15 +45,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public ApiResponse getOne(Long id) {
+    public Response getOne(Long id) {
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        return optionalEmployee.map(employee -> new ApiResponse("Employee", true, employee))
+        return optionalEmployee.map(employee -> new Response("Employee", true, employee))
                 .orElseThrow(() -> new ApiResourceNotFoundException("Employee ID '" + id + "' does not found"));
     }
 
 
     @Override
-    public ApiResponse edit(EmployeeDTO employeeDTO, Long id) {
+    public Response edit(EmployeeDTO employeeDTO, Long id) {
         Employee editingEmployee = employeeRepository.findById(id).orElse(null);
         if (editingEmployee == null) {
             throw new ApiResourceNotFoundException("Employee ID '" + id + "' does not found");
@@ -61,32 +61,32 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         boolean existsByEmailAndIdNot = employeeRepository.existsByEmailAndIdNot(employeeDTO.getEmail(), id);
         if (existsByEmailAndIdNot) {
-            return new ApiResponse("Employee with such a email '" + employeeDTO.getEmail() + "'  already exists", false);
+            return new Response("Employee with such a email '" + employeeDTO.getEmail() + "'  already exists", false);
         }
 
         mapEmployeeDtoToEmployee(employeeDTO, editingEmployee);
 
         Employee editedEmployee = employeeRepository.save(editingEmployee);
 
-        return new ApiResponse("Employee edited", true, editedEmployee);
+        return new Response("Employee edited", true, editedEmployee);
     }
 
     @Override
-    public ApiResponse changeSalary(Long id, Double salary) {
+    public Response changeSalary(Long id, Double salary) {
         if (salary < 100) {
-            return new ApiResponse("Salary must be at least 100.0", false);
+            return new Response("Salary must be at least 100.0", false);
         }
         employeeRepository.changeSalary(id, salary);
-        return new ApiResponse("Employee' salary changed", true);
+        return new Response("Employee' salary changed", true);
     }
 
     @Override
-    public ApiResponse delete(Long id) {
+    public Response delete(Long id) {
         if (!employeeRepository.existsById(id)) {
             throw new ApiResourceNotFoundException("Employee ID '" + id + "' does not found");
         }
         employeeRepository.deleteById(id);
-        return new ApiResponse("Employee deleted", true);
+        return new Response("Employee deleted", true);
     }
 
 

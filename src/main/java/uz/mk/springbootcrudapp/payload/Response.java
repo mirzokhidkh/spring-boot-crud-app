@@ -5,12 +5,12 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class ApiResponse {
+public class Response {
     private String message;
     private boolean status;
     private Object object;
 
-    public ApiResponse(String message, boolean status) {
+    public Response(String message, boolean status) {
         this.message = message;
         this.status = status;
     }
