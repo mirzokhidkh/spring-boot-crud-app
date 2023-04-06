@@ -15,7 +15,24 @@
     <description>spring-boot-crud-app</description>
     <properties>
         <java.version>1.8</java.version>
+        <localRepositoryUrl>http://10.50.50.145:9999/releases</localRepositoryUrl>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>fb-repo-1</id>
+            <url>${localRepositoryUrl}</url>
+        </repository>
+        <repository>
+            <id>fb-repo-2</id>
+            <url>http://10.50.50.98:8080/releases</url>
+        </repository>
+        <repository>
+            <id>centralRepository</id>
+            <url>https://mvnrepository.com/artifact</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -53,6 +70,19 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220924</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uz.fido.testers</groupId>
+            <artifactId>valitest</artifactId>
+            <version>0.1.2-Alpha</version>
+        </dependency>
+
     </dependencies>
 
     <build>
